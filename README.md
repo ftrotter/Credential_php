@@ -1,4 +1,10 @@
-Credential_php
-==============
+NOD Credentialing stack
 
-ACO Wrangler Credentialing tool (php code)
+Now using php!!
+
+using...
+
+-- MyAuth Bundle
+-- SmartyView Bundle
+-- Twitter bootstrap in the public dir
+
