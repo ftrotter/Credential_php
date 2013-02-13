@@ -37,7 +37,12 @@ Route::controller(Controller::detect());
 
 Route::get('/', function()
 {
-	return View::make('home.index');
+	return SView::make('home'); //uses the smarty SView
+});
+
+Route::get('/dashboard', function()
+{
+	return SView::make('dashboard'); //uses the smarty SView
 });
 
 Route::get('/protected', function()

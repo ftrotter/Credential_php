@@ -13,7 +13,7 @@ return array(
 		'unprotected/', // for testing
 	),
 
-	'site_name' => 'NOD App Template', 
+	'site_name' => 'ACO Wrangler Credentialing', 
 	'copyright' => '&copy; Not Only Development 2013 &copy; MI^2 2013',
 	
 	/*
@@ -81,7 +81,7 @@ return array(
 	|
 	*/
 
-	'profiler' => true, //well we always start in development don't we??
+	'profiler' => false, //well we always start in development don't we??
 
 	/*
 	|--------------------------------------------------------------------------

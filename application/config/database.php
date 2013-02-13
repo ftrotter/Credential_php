@@ -97,12 +97,13 @@ return array(
 			'prefix'   => '',
 		),
 //NOD specific
-		'mongor' => array(
-        		'hostname'   => 'localhost',
+		'mongo' => array(
+        		'host'   => 'localhost',
+        		'port'   => '27017',
         		'connect'    => true,
         		'timeout'    => '',
         		'replicaSet' => '',
-        		'db'         => 'ourlaravel',
+        		'db'         => 'cred',
         		'username'   => '',
         		'password'   => '',
 		),

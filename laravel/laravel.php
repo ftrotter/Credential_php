@@ -61,7 +61,7 @@ register_shutdown_function(function()
 |
 */
 
-error_reporting(-1);
+//error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE & ~E_DEPRECATED);
 
 /*
 |--------------------------------------------------------------------------

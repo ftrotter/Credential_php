@@ -49,6 +49,15 @@ class Base_Controller extends Controller {
 
                 $this->view_data['menu'] = $menu;
 
+
+		//WTF, I had to delete the line in laravel that
+		//set this to report everything...
+		//I can find nothing that "brings back" the ability 
+		//to not have to define smarty values in the code
+		//with the exception of doing this...
+		//this is really frustrating...
+		error_reporting(0);
+
                 $menu_contents = SView::make('menu',$this->view_data);
 		$this->view_data['menu_contents'] = $menu_contents;
 
@@ -57,8 +66,11 @@ class Base_Controller extends Controller {
 
 		$this->view_data['displayName'] = '';
 
-                return SView::make('html',$this->view_data);
+                $return_me = SView::make('html',$this->view_data);
+	
 
+		return($return_me);
+		
         }
 
 }
