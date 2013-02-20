@@ -10,6 +10,8 @@ return array(
 		'/',
 		'login/',
 		'index.php/login',
+		'signup/',
+		'index.php/signup',
 		'unprotected/', // for testing
 	),
 
