@@ -1,7 +1,6 @@
 
 
-
-<form class='form-inline' method='POST' action='/cred/doctors/edit'>
+<form class='form-inline' method='POST' action='{$base_url}/doctors/edit'>
 
 {include file='doctors_form.tpl'}
 
