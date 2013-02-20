@@ -7,7 +7,7 @@
 <!-- Stuff that goes on the left -->
               <li class="nav-header">Left Nav </li>
 	<ul>
-		<li> <a href='{$base_url}doctors/form_download?npi={$npi}'> TX Cred form download </a></li>
+		<li> <a href='{$base_url}/doctors/form_download?npi={$npi}'> TX Cred form download </a></li>
 
 	</ul>
 
@@ -22,7 +22,7 @@
 
 <h1> {$npi} </h1>
 
-<form class='form-inline' method='POST' action='/cred/doctors/edit'>
+<form class='form-inline' method='POST' action='{$base_url}/doctors/edit'>
 
 {include file='doctors_form.tpl'}
 
