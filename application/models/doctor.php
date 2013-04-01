@@ -3,10 +3,6 @@
 	//doctors class..
 	class Doctor extends VeryMongo {
 
-
-
-
-
 	}
 
 

@@ -8,9 +8,13 @@ class VeryMongo{
         var $mongo;
 	var $data_array = array();
 
-        function __construct(){
+        function __construct($db_array = null){
 
-		$db_array = Config::get('database.connections.mongo');
+		//I want this to be testable...
+		if(is_null($db_array)){
+			$db_array = Config::get('database.connections.mongo');
+		}
+
 		$host = $db_array['host'];
 		$port = $db_array['port'];
 		$dbname = $db_array['db'];
@@ -28,7 +32,7 @@ function get_all(){
         $collection = $this->mongo->$name;
         $cursor = $collection->find();
 
-        return($cursor);
+        return(iterator_to_array($cursor));
 
 }
 
@@ -84,8 +88,10 @@ function sync($id = 0, $versioning = false){
 	}
 
 	$name = strtolower(get_class($this));
+	$local_id = $name.'_id';
         $collection = $this->mongo->$name; //mongo comes from the MongoObject class...
 
+	$new_data = false;
         if($id !== 0){
 		$find = array($name.'_id' => $id);
 		//for whatever reason the '@' symbol in emails causes fits with findOne.
@@ -93,10 +99,12 @@ function sync($id = 0, $versioning = false){
                 $db_cursor = $collection->find($find);
 		$db_array = $db_cursor->getNext();
 		if(is_null($db_array)){ //sometimes I will have an id, but the db will not know it yet...
-			$db_array = array($name.'_id' => $id); //lets make an array with just the id in it..
+			$db_array = array($local_id => $id); //lets make an array with just the id in it..
+			$new_data = true;
 		}
         }else{
                 $db_array = array();
+		$new_data = true;
         }
 
         
@@ -109,7 +117,7 @@ function sync($id = 0, $versioning = false){
 
         $merged_array = $db_array; // after the for loop above we have merged the two data sources.
 
-        $merged_array[$name.'_id'] = $id; //just to be sure the id stays the same...
+        $merged_array[$local_id] = $id; //just to be sure the id stays the same...
 
 
 	//Begin array beautification!!
@@ -134,8 +142,9 @@ function sync($id = 0, $versioning = false){
 	//
 	//End array beautification
 
+
         //mongo magic that saves our data...
-        $collection->update(array($name.'_id' => $id),$merged_array,array('upsert' => true));
+        $collection->update(array($local_id => $id),$merged_array,array('upsert' => true, 'fsync' => true));
         //save it for the other functions...
         $this->data_array = $merged_array;
         return($merged_array);

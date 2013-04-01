@@ -7,7 +7,7 @@
               <li class='nav-header'>Credential Data Menu</li>
 <li><a href='#li_ID_1'>ID </a></li><li><a href='#li_address_1'>Address </a></li><li><a href='#li_citizenship_1'>Citizenship </a></li><li><a href='#li_coverage_1'>Coverage </a></li><li><a href='#li_degree_1'>Degree </a></li><li><a href='#li_disclosure_1'>Disclosure </a></li><li><a href='#li_formerhospital_1'>Formerhospital </a></li><li><a href='#li_hospital_1'>Hospital </a></li><li><a href='#li_insurance_1'>Insurance </a></li><li><a href='#li_insurancePrev_1'>InsurancePrev </a></li><li><a href='#li_license_1'>License </a></li><li><a href='#li_managed_1'>Managed </a></li><li><a href='#li_military_1'>Military </a></li><li><a href='#li_name_1'>Name </a></li><li><a href='#li_othergrad_1'>Othergrad </a></li><li><a href='#li_partner_1'>Partner </a></li><li><a href='#li_postgrad_1'>Postgrad </a></li><li><a href='#li_practice_1'>Practice </a></li><li><a href='#li_reference_1'>Reference </a></li><li><a href='#li_signature_1'>Signature </a></li><li><a href='#li_specialty_1'>Specialty </a></li><li><a href='#li_work_1'>Work </a></li><li><a href='#li_workhistory_1'>Workhistory </a></li></ul>
 <br>
-<h3> Save Form Data</h3>
+<h5> Save Form Data</h5>
 <p>Current note: {$note} </p>
 <textarea name='note' id='note' rows="3"></textarea>
 <p> NPI </p>
@@ -15,6 +15,14 @@
 <br>
 <br>
 <input type='submit' name='submit' value='Save'>
+
+<h5>Upload other documents</h5>
+<form id="DocumentForm" action="http://api2.transloadit.com/assemblies" enctype="multipart/form-data" method="POST">
+<input type="hidden" name="params" value="{$trans_params}" />
+<input type="file" name="my_file" />
+<input type="submit" value="Upload">
+</form>
+
 
 <ul>
 {foreach from=$documents key=k item=this_document}

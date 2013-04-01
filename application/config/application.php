@@ -12,6 +12,8 @@ return array(
 		'index.php/login',
 		'signup/',
 		'index.php/signup',
+		'documents/notify', //for transloadit
+		'index.php/documents/notify',
 		'unprotected/', // for testing
 	),
 
