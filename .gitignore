@@ -37,7 +37,7 @@ publish
 .idea
 
 #NOD specific
-*/config/*.php
+*/config/*
 */cache/*
 */log/*
 *.yaml
