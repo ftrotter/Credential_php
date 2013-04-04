@@ -1,5 +1,7 @@
 <?php
 
+use nod\orm;
+
 class Providertest_Task extends Task{
 
     public function run($arguments)
