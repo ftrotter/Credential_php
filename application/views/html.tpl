@@ -18,8 +18,15 @@
         padding: 9px 0;
       }
     </style>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src='http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'></script>
+<script type="text/javascript" src="http://www.alpacajs.org/js/alpaca.min.js"></script>
+
+<link type="text/css" href="http://alpacajs.org/css/alpaca-bootstrap.css" rel="stylesheet"/>
+
+    <script src="{$base_url}/js/bootstrap.js"></script>
     <link href="{$base_url}/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="{$base_url}/css/rickscustom.css" rel="stylesheet">
+
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -72,8 +79,6 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="{$base_url}/js/bootstrap.js"></script>
 <script type="text/javascript" src="//static.twilio.com/libs/twiliojs/1.1/twilio.min.js"></script>
 <script type="text/javascript" src="//assets.transloadit.com/js/jquery.transloadit2.js"></script>
 <script type="text/javascript">
