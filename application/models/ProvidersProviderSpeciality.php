@@ -1,7 +1,7 @@
 <?php
 	
 
-	class laravel_migration extends  laravel_migrationBase{ 
+	class ProvidersProviderSpeciality extends  ProvidersProviderSpecialityBase{ 
 		//put custom code here... look in the base class for generated relations..
 		
 	}

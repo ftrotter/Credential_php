@@ -4,17 +4,39 @@
 
 	class BaseORM extends Eloquent{ //which extends Eloquent...
 
-		//nothing here for now...
 
-		//This function returns a JSON form definition ala the Alpaca project
-		//for this object. This function is smarty enough to get the 
-		// '_names' fields from related objects to power select drop downs...
-		//but for now its all stubbed out...
-		function getAlpacaJSON(){
-				
-			return json_encode($this->getAlpacaArray(),JSON_PRETTY_PRINT);
+		static function listObjectTypes(){
+
+			$class_list = array();
+
+			if ($handle = opendir(dirname(__FILE__))) {
+    				while (false !== ($entry = readdir($handle))) {
+        				if ($entry != "." && $entry != "..") {
+        			    		if(
+							strpos($entry,'Base') && 
+							//exludes BaseORM which is what we want..
+							//because it starts with 'Base' so this returns 0
+							//which is evaluated to false...
+							!strpos($entry,'swp') && 
+							//also exclude swp files from vim...
+							strpos($entry,'php')
+							//we only want php files..
+							){
+							$class_array = explode('Base',$entry);
+							$class_name = array_shift($class_array);
+							$class_list[] = $class_name;	
+						}
+        				}
+    				}
+    				closedir($handle);
+
+			}
+
+			return($class_list);
 
 		}
+
+		
 
 
 		function get_field_types(){
@@ -48,10 +70,8 @@
 		}
 
 
-		function getSelectArray(){
-
+		function getMyNameField(){
 			$fields = $this->get_field_types();	
-
 
 			$best_field = null;
 			foreach($fields as $field_name => $field_type){
@@ -61,14 +81,16 @@
 				}
 				//but if the select_name is set.. well then obviously 
 				//we want to choose that one over all the others...
-				if(strpos($field_name,'select_name') !== false && strpos($field_type,'CHAR')){
+				if(strpos($field_name,'select_name') !== false && strpos(strtolower($field_type),'char')){
 					$best_field = $field_name;
 				}
 
 			}
 
 			if(!isset($the_field)){
+				echo "Error, each object must have at least one _name field, here is what I got..<br><pre>";
 				var_export($fields);
+				echo "</pre>";
 				exit();
 
 			}
@@ -77,6 +99,14 @@
 				$the_field = $best_field; //lets upgrade to the select_name
 			}
 
+			return($the_field);
+
+		}
+
+		function getSelectArray(){
+
+			$my_name_field = $this->getMyNameField();
+
 			//OK lets load every instance of this class
 			$this_class_name = get_class($this);
 			$all_of_us = $this_class_name::all();
@@ -84,12 +114,25 @@
 			$return_array = array();
 			//and loop over them creating an array of ids => select name...
 			foreach($all_of_us as $one_of_us){
-				$return_array[$one_of_us->id] = $one_of_us->$the_field;
+				$return_array[$one_of_us->id] = $one_of_us->$my_name_field;
 			}
 
 			return($return_array);
 		}
 
+
+
+
+		function getAlpacaJSON(){
+				
+			return json_encode($this->getAlpacaArray(),JSON_PRETTY_PRINT);
+
+		}
+
+		//This function returns a JSON form definition ala the Alpaca project
+		//for this object. This function is smart enough to get the 
+		// '_names' fields from related objects to power select drop downs...
+		//but for now its all stubbed out...
 		function getAlpacaArray(){
 	
 		$class_name = get_class($this);

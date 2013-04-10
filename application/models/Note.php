@@ -1,7 +1,7 @@
 <?php
 	
 
-	class laravel_migration extends  laravel_migrationBase{ 
+	class Note extends  NoteBase{ 
 		//put custom code here... look in the base class for generated relations..
 		
 	}

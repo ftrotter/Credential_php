@@ -1,7 +1,7 @@
 <?php
-	
+	namespace nod\orm;
 
-	class laravel_migration extends  laravel_migrationBase{ 
+	class taxonomy extends  taxonomyBase{ 
 		//put custom code here... look in the base class for generated relations..
 		
 	}
