@@ -37,8 +37,12 @@ publish
 .idea
 
 #NOD specific
-*/config/*
+application/config/*
+*/config*
 */cache/*
 */log/*
 *.yaml
 /public/rockmongo*
+
+#project specific
+/public/fff*
