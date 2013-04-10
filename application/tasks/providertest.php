@@ -9,13 +9,11 @@ class Providertest_Task extends Task{
 
 
 		$Provider = Provider::find(1); //this should load the first provider which is our test provider...
+		
+		$CorrPhone = $Provider->Corr_Phone;	
 
-		var_dump($Provider);
-		
-		$CorrPhone = $Provider->Corr_Phone;
-		
 		$hard_coded_phone = '1231231234';
-		if(strncmp($CorrPhone->phone,$hard_coded_phone) == 0){
+		if(strcmp($CorrPhone->phone,$hard_coded_phone) == 0){
 			//then we are hitting the DB successfully...
 			echo "CorrPhone() works on the Provider Object\n";
 			
@@ -24,7 +22,19 @@ class Providertest_Task extends Task{
 			exit();
 
 		}
-		
+
+                $CorrPhone = $Provider->Corr_Phone()->first();;
+
+                $hard_coded_phone = '1231231234';
+                if(strcmp($CorrPhone->phone,$hard_coded_phone) == 0){
+                        //then we are hitting the DB successfully...
+                        echo "CorrPhone() works on the Provider Object\n";
+
+                }else{
+                        echo "FAIL!! did you change the hard coded phone from $hard_coded_phone??\n";
+                        exit();
+
+                }
 
     }
 
