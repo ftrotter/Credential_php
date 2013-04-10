@@ -32,6 +32,27 @@ class Documents_Controller extends Base_Controller {
 	}
 
 
+	public function action_docform(){
+
+		$this->view_data['doctor_name'] = 'Fred Trotter';
+		$this->view_data['doctor_id'] = 1;
+
+		$base_url = URL::base();
+		$auth = Config::get('transloadit_auth');
+
+		$template_id = '7e23fb10bc224ca3937c3e7fe3f5a9f6'; //this shouldnt be hardcoded...
+
+		$this->view_data['trans_params'] = array(
+    			'auth' => array('key' => $auth),
+    			'template_id' => $template_id,
+    			'redirect_url' => $base_url . '/index.php/documents/notify/'
+);
+
+
+		return($this->_render('documents_docform.tpl'));
+
+
+	}
 }
 
 /* End of file welcome.php */
