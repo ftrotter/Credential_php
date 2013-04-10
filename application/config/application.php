@@ -85,7 +85,7 @@ return array(
 	|
 	*/
 
-	'profiler' => true, //well we always start in development don't we??
+	'profiler' => false, //well we always start in development don't we??
 
 	/*
 	|--------------------------------------------------------------------------
