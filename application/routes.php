@@ -32,17 +32,53 @@
 |
 */
 
-//We use controllers!!
-Route::controller(Controller::detect());
+//Since we use the smarty templating directly from the routes we have this here...
+//To be DRY this and the controllers view setup should be moved to a static function
+//somewhere... perhaps even in the config/application.php???
+function setup_view_data(){
+
+	$base_url = URL::base();
+	$view_data = array(
+		'displayName' => 'UserName Here',
+		'copyright' => 'Notice',	
+		'title' => 'NOD Cred',
+		'base_url' => $base_url,
+		'menu' => array( 0 => array(
+				'name' => 'Dashboard',
+				'url' => "$base_url/dashboard/",
+				'icon' => '',
+				),
+				1 => array(
+				'name' => 'Data',
+				'url' => "$base_url/ORM",
+				'icon' => '',
+				),
+
+
+
+			),
+	);
+
+	//error_reporting(0); //WTF why is this nessecary... see note in base.php controller
+
+	$menu_contents = SView::make('menu',$view_data);
+	$view_data['menu_contents'] = $menu_contents;
+	return($view_data);
+}
 
 Route::get('/', function()
 {
-	return SView::make('home'); //uses the smarty SView
+
+	if (Auth::guest()){
+		return Redirect::to('login');
+	}else{
+		return simple_smarty_wrap(SView::make('dashboard')); //uses the smarty SView
+	}
 });
 
 Route::get('/dashboard', function()
 {
-	return SView::make('dashboard'); //uses the smarty SView
+	return simple_smarty_wrap(SView::make('dashboard')); //uses the smarty SView
 });
 
 Route::get('/protected', function()
@@ -55,7 +91,149 @@ Route::get('/unprotected', function()
         return("Everyone can see this");
 });
 
+function simple_smarty_wrap($stuff){
+	$view_data = setup_view_data();
+	$stuff = "<div class='container'>\n$stuff\n</div>";
+	$view_data['view_contents'] = $stuff;
+	return SView::make('html',$view_data);
+}
 
+Route::get('/ORM/(:any)/new',function($object_name){
+
+	if(class_exists($object_name)){
+		$view_data = setup_view_data();
+		$object = new $object_name();
+		$view_data['form_json'] = $object->getAlpacaJSON();
+		$view_data['object_name'] = $object_name;
+		$view_data['view_contents'] = SView::make('ormform',$view_data);
+		return SView::make('html',$view_data);
+	}else{
+		return "<h1>Cough... sputter... I can't find an ORM called $object_name</h1>";
+	}
+
+});
+
+Route::get('/ORM/(:any)/(:num)',function($object_name, $number){
+
+	if(class_exists($object_name)){	
+		$view_data = setup_view_data();
+		$object = $object_name::find($number);
+		$view_data['form_json'] = $object->getAlpacaJSON();
+		$view_data['object_name'] = $object_name;
+		$view_data['view_contents'] = SView::make('ormform',$view_data);
+		return SView::make('html',$view_data);
+	}else{
+		return "<h1>Cough... sputter... I can't find an ORM called $object_name</h1>";
+	}
+
+});
+
+
+
+Route::post('/ORM/(:any)/new',function($object_name, $number = null){
+
+	if(class_exists($object_name)){
+
+		$myObject = new $object_name();
+		$input = Input::all();
+		unset($input['submit']);
+
+	
+		$myObject = $object_name::create($input);
+
+		//this is such a hack...
+		//http://forums.laravel.io/viewtopic.php?pid=34751#p34751
+		$new_id = DB::connection('mysql')->pdo->lastInsertId();
+			
+		$view_data = setup_view_data();	
+		$return_me = "<h1> I should have saved a new $object_name with an id of $id $new_id  </h1>";
+		return(simple_smarty_wrap($return_me));
+	
+	}else{
+		return "<h1>Cough... sputter... I can't find an ORM called $object_name</h1>";
+	}
+
+});
+
+
+
+Route::post('/ORM/(:any)/(:num?)',function($object_name, $number = null){
+
+	if(class_exists($object_name)){	
+		$view_data = setup_view_data();	
+		if(is_null($number)){
+			$return_me .= "<p>Cough sputter... I did not get a number...";
+		}else{
+			$myObject = $object_name::find($number);
+			$input = Input::all();
+			unset($input['submit']);
+			$myObject->fill($input);
+			$myObject->save();
+			
+			$return_me ="<h1> Saved $object_name with $number </h1> 
+		<ul>
+			<li><a href='/ORM/$object_name/$number'>continue to edit $object_name $number</a></li>
+			<li><a href='/ORM/$object_name/'>return to $object_name Manager</a></li>
+			<li><a href='/ORM'>return to Data Manager</a></li>
+			<li><a href='/'>return to dashboard</a></li>
+		</ul>
+ </p> ";
+		}	
+		return(simple_smarty_wrap($return_me));
+	
+	}else{
+		return simple_smarty_wrap("<h1>Cough... sputter... I can't find an ORM called $object_name</h1>");
+	}
+
+});
+
+
+Route::get('/ORM/(:any)',function($object_name){
+
+	if(class_exists($object_name)){	
+		$return_me = "<h1> List of all $object_name </h1>";
+		$return_me .= "<a href='/ORM/$object_name/new'>Make a new $object_name</a><br><br>";
+		$return_me .= "<ul>\n";
+		foreach($object_name::all() as $this_one_object){
+			if(!isset($name_field)){ //only runs on the first pass
+				$name_field = $this_one_object->getMyNameField();
+			}
+
+			$this_id = $this_one_object->id;
+			$this_name = $this_one_object->$name_field;
+		
+			$return_me .= "<li><a href='/ORM/$object_name/$this_id'>$this_name ($this_id)</a></li>\n";
+		}
+		$return_me .= "</ul>\n";
+		
+	
+	}else{
+		$return_me = "<h1>Cough... sputter... I can't find an ORM called $object_name</h1>";
+	}
+
+	return(simple_smarty_wrap($return_me));
+
+});
+
+
+Route::get('/ORM',function(){
+
+	$class_list = BaseORM::listObjectTypes();
+
+	$return_me = "<h1> Data </h1>";
+	$return_me .= "<ul>\n";
+		foreach($class_list as $this_class){
+			$return_me .= "<li><a href='/ORM/$this_class/'>$this_class</a></li>\n";
+		}
+		$return_me .= "</ul>\n";
+
+	return(simple_smarty_wrap($return_me));
+
+});
+
+
+//We use controllers!!
+Route::controller(Controller::detect());
 
 /*
 |--------------------------------------------------------------------------
