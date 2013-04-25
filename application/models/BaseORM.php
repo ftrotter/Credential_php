@@ -5,6 +5,11 @@
 	class BaseORM extends Eloquent{ //which extends Eloquent...
 
 
+		//we need to override the core ORM functions to be aware of the true/false
+		//to 1/0 translation...
+
+
+
 		static function listObjectTypes(){
 
 			$class_list = array();
@@ -197,7 +202,24 @@
 				$hidden = true;	
 			}
 
+			if(strpos($field_name,'is_') !== false){ //this is a boolean and should have a checkbox 
+				$type = 'boolean'; 
 
+				$extra_opt = array("rightLabel"=> "$label?");
+				$label_array = explode(' ',$label);
+				$label = $label_array[1]; //loose the "Is" in the main label..
+				if(is_null($current_value)){
+					$data_array[$field_name] = false;
+				}else{
+					// we need to translate between the db world of 0/1 to json true/false
+					if($current_value){
+						$data_array[$field_name] = true;
+					}else{
+						$data_array[$field_name] = false;
+					}
+							
+				}
+			}
 
 
 			if(strpos($field_name,'_date')){
@@ -208,8 +230,7 @@
 					$data_array[$field_name] = '01/01/01';
 				}else{
 					$this_date = strtotime($current_value);
-					$data_array[$field_name] = date('m/d/y',$this_date);
-					
+					$data_array[$field_name] = date('m/d/y',$this_date);	
 				}
 			}
 

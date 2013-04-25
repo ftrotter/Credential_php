@@ -8,7 +8,6 @@ class Documents_Controller extends Base_Controller {
 	public function action_notify()
 	{
 
-
 		
 		$result_json = $_POST['transloadit'];
 		$result = json_decode($result_json);
@@ -38,18 +37,21 @@ class Documents_Controller extends Base_Controller {
 		$this->view_data['doctor_id'] = 1;
 
 		$base_url = URL::base();
-		$auth = Config::get('transloadit_auth');
+		$auth = Config::get('transloadit_authkey');
+		$template_id = Config::get('transloadit_template_id');
 
-		$template_id = '7e23fb10bc224ca3937c3e7fe3f5a9f6'; //this shouldnt be hardcoded...
-
-		$this->view_data['trans_params'] = array(
+		$trans_params = array(
     			'auth' => array('key' => $auth),
     			'template_id' => $template_id,
     			'redirect_url' => $base_url . '/index.php/documents/notify/'
 );
 
+		$trans_params_html = htmlentities(json_encode($trans_params));
 
-		return($this->_render('documents_docform.tpl'));
+
+		$this->view_data['trans_params'] = $trans_params_html;
+
+		return($this->_render('documents_docform'));
 
 
 	}

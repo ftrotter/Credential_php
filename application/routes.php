@@ -132,6 +132,8 @@ Route::get('/ORM/(:any)/(:num)',function($object_name, $number){
 
 Route::post('/ORM/(:any)/new',function($object_name, $number = null){
 
+
+
 	if(class_exists($object_name)){
 
 		$myObject = new $object_name();
@@ -159,6 +161,7 @@ Route::post('/ORM/(:any)/new',function($object_name, $number = null){
 
 Route::post('/ORM/(:any)/(:num?)',function($object_name, $number = null){
 
+
 	if(class_exists($object_name)){	
 		$view_data = setup_view_data();	
 		if(is_null($number)){
@@ -167,6 +170,19 @@ Route::post('/ORM/(:any)/(:num?)',function($object_name, $number = null){
 			$myObject = $object_name::find($number);
 			$input = Input::all();
 			unset($input['submit']);
+			foreach($input as $id => $value){
+				if(strpos($id,'is_') !== false){ 
+					$input[$id] = true;
+				}
+			}
+
+			foreach($myObject->get_fields() as $field){
+				if(!isset($input[$field])){
+					$input[$field] = false; //this means a checkbox was not checked..
+				}
+			}
+
+
 			$myObject->fill($input);
 			$myObject->save();
 			
