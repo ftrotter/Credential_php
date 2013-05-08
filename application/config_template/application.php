@@ -9,7 +9,9 @@ return array(
 	'no_login_needed' => array (
 		'/',
 		'login/',
+		'signup/',
 		'index.php/login',
+		'index.php/signup',
 		'unprotected/', // for testing
 	),
 
