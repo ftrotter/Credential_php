@@ -148,7 +148,13 @@ Route::post('/ORM/(:any)/new',function($object_name, $number = null){
 		$new_id = DB::connection('mysql')->pdo->lastInsertId();
 			
 		$view_data = setup_view_data();	
-		$return_me = "<h1> I should have saved a new $object_name with an id of $id $new_id  </h1>";
+		$return_me = "<h1> Created new $object_name ($new_id)  </h1>
+		<ul>
+			<li><a href='/ORM/$object_name/new'>Add new $object_name</a> </li>
+			<li><a href='/ORM/$object_name/$new_id'>Edit $object_name $new_id</a> </li>
+			<li><a href='/ORM/$object_name/'>Back to $object_name list</a> </li>
+		</ul>
+		";
 		return(simple_smarty_wrap($return_me));
 	
 	}else{
@@ -238,6 +244,9 @@ Route::get('/ORM',function(){
 
 	$return_me = "<h1> Data </h1>";
 	$return_me .= "<ul>\n";
+
+	asort($class_list);
+
 		foreach($class_list as $this_class){
 			$return_me .= "<li><a href='/ORM/$this_class/'>$this_class</a></li>\n";
 		}

@@ -13,4 +13,4 @@
     <p>{{ Form::submit('Login') }}</p>
 {{ Form::close() }}
 
-or... <a href=/index.php/signup'>signup</a>
+or... <a href='/index.php/signup'>signup</a>
