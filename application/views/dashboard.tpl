@@ -1,6 +1,5 @@
 <h1> Dashboard</h1>
 <ul>
-	<li><a href='/doctors/index/'>Doctors List</a> </li>
-	<li><a href='/doctors/edit/'>Add Doctor</a> </li>
+	<li><a href='/pdfmapper/'>The big form</a> </li>
 
 </ul>
