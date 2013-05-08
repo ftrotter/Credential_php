@@ -1,6 +1,12 @@
   
 <div class='container'>
 <h1> Form Generated from tx_cred.merged.pdf </h1>
+  <div class='control-group'>
+    <label class='control-label' for='npi'>National Provider Identifier (npi)</label>
+    <div class='controls'>
+        <input type='text' name='npi' id='npi' value='{$npi}'>
+    </div>
+  </div>
 <form class='form-horizontal' method='POST'>
 <ul class='nav nav-tabs'>
 	
