@@ -19,7 +19,7 @@ class VeryMongo{
 			$db_array = Config::get('database.connections.mongo');
 		}
 
-		$host = $db_array['host'];
+		$host = $db_array['hostname'];
 		$port = $db_array['port'];
 		$dbname = $db_array['db'];
 		if(isset($db_array['username'])){
