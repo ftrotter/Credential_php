@@ -6,7 +6,9 @@
 	$db_array = array(
 		'host' => 'localhost',
 		'port' => '27017',
-		'db' => 'test'
+		'db' => 'test',
+		'username' => 'test',
+		'password' => 'test'
 );
 
 	$Doctor = new Doctor($db_array);
@@ -15,6 +17,7 @@
 	$stuff = array(
 		'one' => '111111',
 		'two' => false,
+		'three' => 0
 ); 
 
 	$Doctor->sync($id);

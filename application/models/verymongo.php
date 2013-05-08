@@ -8,6 +8,10 @@ class VeryMongo{
         var $mongo;
 	var $data_array = array();
 
+	var $mongo_url;
+	var $MongoClass;
+
+
         function __construct($db_array = null){
 
 		//I want this to be testable...
@@ -18,11 +22,39 @@ class VeryMongo{
 		$host = $db_array['host'];
 		$port = $db_array['port'];
 		$dbname = $db_array['db'];
+		if(isset($db_array['username'])){
+			$user = $db_array['username'];
+			$passwd = $db_array['password'];
+			$this->mongo_url = "mongodb://$user:$passwd@$host:$port/$dbname";
+		}else{
+			$this->mongo_url = "mongodb://$host:$port/$dbname";
+		}
+	
 
+		if(!class_exists('MongoClient')){
+			$this->MongoClass = 'Mongo';	
+		}else{
+			$this->MongoClass = "MongoClient";
+		}
 
-                $db = new Mongo("mongodb://$host:$port/$dbname");
+		try{
+			$db = new $this->MongoClass($this->mongo_url);
+		}
+		catch( MongoCursorException $e){
+			//this usually means a poor connection
+			$this->_mongoFail($e);
+		}
                 $this->mongo = $db->$dbname;
         }
+
+function _mongoFail($e){
+
+                        echo "Died with ". $e->getMessage(). "\n";
+                        echo "Using PECL class $this->MongoClass\n";
+                        echo "Tried to connect with \n ".$this->mongo_url."\n";
+                        exit();
+
+}
 
 //returns the cursor to all records
 function get_all(){
@@ -97,7 +129,13 @@ function sync($id = 0, $versioning = false){
 		//for whatever reason the '@' symbol in emails causes fits with findOne.
 		//so we use find and getNext to make our own findOne
                 $db_cursor = $collection->find($find);
-		$db_array = $db_cursor->getNext();
+		try{
+			$db_array = $db_cursor->getNext();
+		} catch( MongoCursorException $e){
+                        //this usually means a poor connection
+			$this->_mongoFail($e);
+                }
+
 		if(is_null($db_array)){ //sometimes I will have an id, but the db will not know it yet...
 			$db_array = array($local_id => $id); //lets make an array with just the id in it..
 			$new_data = true;
