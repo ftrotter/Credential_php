@@ -1,6 +1,6 @@
 <?php
 
-class Pdfmapper_Controller extends Base_Controller {
+class Doctors_Controller extends Base_Controller {
 
 
 	public $restful = true;
@@ -76,8 +76,32 @@ class Pdfmapper_Controller extends Base_Controller {
 
 		$this->view_data['list'] = $select_array;
 
-		return($this->_render('pdfmapper_list'));
+		return($this->_render('doctors_list'));
 		
 
 	}
+
+	public function get_dash(){
+	
+                if(isset($_GET['npi'])){
+                        //load the NPI back...
+                        $npi = $_GET['npi'];
+                        if(is_numeric($npi) && strlen($npi) == 10){
+                                $Doctor = new Doctor();
+                                $doc_id = (int) $npi;
+                                $Doctor->sync($doc_id); //use it to load the current record
+                                $this->view_data = $Doctor->data_array;
+                                $this->view_data['npi'] = $npi;
+                        }
+
+                }else{
+			echo "how did you get to the doctor dashboard without an npi";	
+			exit();
+		}
+
+		return($this->_render('doctors_dash'));
+
+	}
+
+
 }
