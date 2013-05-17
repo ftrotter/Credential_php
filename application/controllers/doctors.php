@@ -1,103 +1,83 @@
 <?php
 
-class Doctors_Controller extends Base_Controller {
+class Pdfmapper_Controller extends Base_Controller {
 
 
+	public $restful = true;
+
+	public function get_index()
+	{	
+
+
+		if(isset($_GET['npi'])){
+			//load the NPI back...
+			$npi = $_GET['npi'];
+                	if(is_numeric($npi) && strlen($npi) == 10){
+				$Doctor = new Doctor();
+                        	$doc_id = (int) $npi;
+             	           	$Doctor->sync($doc_id); //use it to load the current record
+				$this->view_data = $Doctor->data_array;
+                        	$this->view_data['npi'] = $npi;
+			}
+
+		}
+
+
+		return($this->_render('pdfmapper_index'));
+	}
+
+	public function post_index(){
+
+		if(
+				!isset($_POST['npi']) ||
+				!isset($_POST['name_first']) ||
+				!isset($_POST['name_last']) 
+		){
+
+			echo "I really need to have at least npi, name_first and name_last to make a record... try again";
+			exit();
+
+		}
+
+
+		$npi = $_POST['npi']; //get my id from the post	
+		if(is_numeric($npi) && strlen($npi) == 10){
+			$Doctor = new Doctor();
+			$doc_id = (int) $npi;
+			$Doctor->sync($doc_id); //use it to load the current record
+			$Doctor->data_array =$_POST; //smash the input ontop 
+			$Doctor->sync($doc_id); //save it.
+
+			$this->view_data['npi'] = $npi;
+
+			return($this->_render('pdfmapper_index_post'));
+		}else{
+
+			echo "we require a 10 digit numerical NPI to work";
+			exit();
+		}
 	
+	}
 
-	public function action_index()
-	{
+	public function get_list(){
 
 		$Doctor = new Doctor();
-		$all_docs = $Doctor->get_all();
-		var_export($all_docs);
-		exit();
-		return($this->_render('doctors_index'));
-
-	}
-
-
-	public function action_formdownload(){
-
-	}
-
-        public function action_edit()
-        {
+		$DoctorList = $Doctor->get_all();
 		
-		$npi = false;
-		if(isset($_GET['npi'])){
-			if(is_numeric($_GET['npi'])){
-				$npi = $_GET['npi'];
-			}
-		}
-		if(isset($_POST['npi'])){
+		$select_array = array();
+		foreach($DoctorList as $id => $doc_array){
+
 			
-			$note = $_POST['note'];
-			unset($_POST['note']);
-			$npi = $_POST['npi'];
-			$Doctor = new Doctor();
-			$Doctor->data_array['fields'] = $_POST;
-			$Doctor->data_array['note'] = $note;
-			$use_versioning = true;
-			$Doctor->sync($npi);
+			$select_array[$doc_array['npi']] = array(
+				'first_name' => $doc_array['name_first'],
+				'last_name' => $doc_array['name_last'],
+					);
+		}	
 
-		}
+		$this->view_data['list'] = $select_array;
 
-		if($npi){
-			$Doctor = new Doctor();
-			$Doctor->sync($npi);
-			if(!isset($Doctor->data_array['fields'])){
-				echo "No fields found... ";
-				exit();
-			}
-			foreach($Doctor->data_array['fields'] as $key => $value){
-                		$this->view_data[$key] = $value;
-			}
-			$this->view_data['note'] = $Doctor->data_array['note'];
-			$this->view_data['npi'] = $npi;
-		}
-	
-
-		//$documents = Document::where('doctor_id', '=', array('doctor_id' => $npi))->get(0);
-		$documents = Document::all();	
-
-		$doc_view = array();
-		foreach($documents as $id => $doc){
-
-			//var_export($doc);
-	
-			$tmp_array = array();	
-			$tmp_array['img_url'] = $doc->getImageURL();
-			$tmp_array['doc_url'] = $doc->documenturl;
-			$tmp_array['filename'] = $doc->filename;
-			$doc_view[] = $tmp_array;
-
-		}
-
-		$this->view_data['documents'] = $doc_view;	
-
-
-$params = array(
-    'auth' => array('key' => '170cb47bb71442b1ae47cb883eab7aeb'),
-    'template_id' => '7e23fb10bc224ca3937c3e7fe3f5a9f6',
-    'redirect_url' => 'http://cred.ft1.us/Documents/docNotification/'
-);
-	$this->view_data['trans_params'] = htmlentities(json_encode($params));
-
-
-               	return($this->_render('doctors_edit'));
-
-		
-        }
-
-
-
-	function _load_list(){
-
+		return($this->_render('pdfmapper_list'));
 		
 
 	}
 }
-
-/* End of file welcome.php */
-/* Location: ./application/controllers/welcome.php */
