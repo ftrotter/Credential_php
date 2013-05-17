@@ -103,6 +103,13 @@ Route::get('/ORM/(:any)/new',function($object_name){
 	if(class_exists($object_name)){
 		$view_data = setup_view_data();
 		$object = new $object_name();
+
+		foreach($_GET as $gkey => $gitem){ //sanatize and add to the form...
+			$gkey = mysql_real_escape_string($gkey);
+			$gitem = mysql_real_escape_string($gitem);
+			$object->$gkey = $gitem;
+		}
+
 		$view_data['form_json'] = $object->getAlpacaJSON();
 		$view_data['object_name'] = $object_name;
 		$view_data['view_contents'] = SView::make('ormform',$view_data);
