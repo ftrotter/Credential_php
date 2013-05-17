@@ -180,7 +180,6 @@ function sync($id = 0, $versioning = false){
 	//
 	//End array beautification
 
-
         //mongo magic that saves our data...
         $collection->update(array($local_id => $id),$merged_array,array('upsert' => true, 'fsync' => true));
         //save it for the other functions...

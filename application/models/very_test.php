@@ -4,7 +4,7 @@
 	require_once('doctor.php');
 
 	$db_array = array(
-		'host' => 'localhost',
+		'hostname' => 'localhost',
 		'port' => '27017',
 		'db' => 'test',
 		'username' => 'test',
