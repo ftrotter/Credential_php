@@ -28,6 +28,18 @@ class Pdfmapper_Controller extends Base_Controller {
 
 	public function post_index(){
 
+		if(
+				!isset($_POST['npi']) ||
+				!isset($_POST['name_first']) ||
+				!isset($_POST['name_last']) 
+		){
+
+			echo "I really need to have at least npi, name_first and name_last to make a record... try again";
+			exit();
+
+		}
+
+
 		$npi = $_POST['npi']; //get my id from the post	
 		if(is_numeric($npi) && strlen($npi) == 10){
 			$Doctor = new Doctor();
@@ -49,8 +61,23 @@ class Pdfmapper_Controller extends Base_Controller {
 
 	public function get_list(){
 
+		$Doctor = new Doctor();
+		$DoctorList = $Doctor->get_all();
 		
+		$select_array = array();
+		foreach($DoctorList as $id => $doc_array){
 
+			
+			$select_array[$doc_array['npi']] = array(
+				'first_name' => $doc_array['name_first'],
+				'last_name' => $doc_array['name_last'],
+					);
+		}	
+
+		$this->view_data['list'] = $select_array;
+
+		return($this->_render('pdfmapper_list'));
+		
 
 	}
 }
