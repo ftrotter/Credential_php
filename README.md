@@ -1,3 +1,5 @@
+retired in favor of Laravel 4 stack: https://github.com/ftrotter/Credential
+
 NOD Credentialing stack
 
 Now using php!!
